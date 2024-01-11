@@ -1,0 +1,49 @@
+<html>
+<!-- Mirrored from research.dwi.ufl.edu/projects/fanDTasia/help.php?id=5 by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Jan 2024 18:59:17 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><title>fanDTasia help / tutorial- Diffusion Weighted MRI Processing Tool</title></head><body bgcolor="#dddddd"><table width="100%" bgcolor="#000000"><tr><td valign="top" bgcolor="#FFFFFF"><table><tr><td valign="top"><a href="index.html"><img src="fandtasia_banner.jpg" width="300px"></a></td></tr><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#000000"><table width="100%" bgcolor="#000000"><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>Help - List of topics</b></font></td></tr></table>
+<a href="helpff5d.html?id=0">System Requirements</a><br>
+<a href="help681a.html?id=1">Input Window</a><br>
+<a href="help0b30.html?id=2">Diffusion Weighted Images</a><br>
+<a href="helpd708.html?id=3">Diffusion Tensor Estimation</a><br>
+<a href="helpdcfd.html?id=4">4th-order Diffusion Tensor Estimation</a><br>
+<a href="helpd61c.html?id=5">Supported File Formats</a><br>
+</font></td></tr></table></td><td width="100%" valign="top" bgcolor="#FFFFFF"><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="000000"><table width="100%" bgcolor="#000000"><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>Supported File Formats</b></font></td></tr></table><br>
+&nbsp;&nbsp;&nbsp; Currently fanDTasia supports the following file formats: 2dseq/reco (Bruker), fdt (fanDTasia)<br><br>
+&nbsp;&nbsp;&nbsp; More file formats will be soon added to the system. If you want us to give priority to a spesific file format please send an e-mail to Angelos Barmpoutis and he will accomodate your request as soon as possible.<br><br>
+
+&nbsp;&nbsp;&nbsp; <b>FDT file format:</b><br>
+The input is given using two different input files with EXACTLY the same file name but different file extension: a) a text file (.txt extension) with the magnetic-gradient directions and b-values and b) a raw binary file (.fdt extension) with the acquired DW-MR images.
+Simple text and raw binary formats are used by the program in order to allow the users to convert easily their datasets and enhance the dissemination of the software.<br><br>
+
+The text file is in the form of a matrix with 4 columns and N lines. The three first columns are the coefficients gx, gy, gz, of the magnetic gradient directions (unit vectors) and the fourth column is the corresponding b-value.
+There are as many lines as the number of the acquired DW-MRI images (i.e. number of gradient directions and b-values). Here is an example of a text file from a dataset with approximate b-value=1250s/mm2:<br>
+<font face="Courier">0.000000 -0.000000 1.000000 1271.455993<br> 
+0.884931 -0.000000 0.465723 1244.044982<br>
+0.274753 0.840654 0.466703 1244.486023<br>
+-0.716467 0.518860 0.466325 1242.994965<br>
+...<br><br></font>
+ 
+The binary file contains the acquired DW-MRI intensities stored using the form of floating point numbers (float 32-bit big endian). 
+The file contains first 4 integers (32-bit big endian) with the dimensions of the dataset: size x, size y, number of slices (i.e. size z), number of DW-MR volumes (usually as many as the magnetic gradients used in the scanning). 
+Then the DW-MRI intensities are stored in the following order:<br>
+<font face="Courier">
+for vol=1 up to Number_of_DWMRI_volumes<br>
+&nbsp;&nbsp;&nbsp;for z=1 up to size_z<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for y=1 up to size_y<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for x=1 up to size_x<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data[x,y,z,vol]= read a float from the file;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>
+&nbsp;&nbsp;&nbsp;end<br>
+end<br>
+</font><br><br>
+&nbsp;&nbsp;&nbsp;A sample file in the above format can be downloaded from this <a href="fandtasia_demo.zip">link</a>. Please save and extract the two files (.fdt and .txt) contained in the zip folder. 
+Then you can open these files using fanDTasia.<br><br>
+&nbsp;&nbsp;&nbsp;For MATLAB users, you can download two simple script files for opening and saving files in the FDT binary format: <a href="openFDT.m"> openFDT.m</a> and <a 
+href="writeFDT.m"> writeFDT.m</a>.
+<br><br>
+</font></td></tr></table><center><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Developed by <a href="http://www.cise.ufl.edu/~abarmpou">Angelos Barmpoutis</a>, Ph.D. - CVGMI lab - Computer and Information and Engineering Department - University of Florida [Version 0.01.090125 Beta]</font></center>
+      </body>
+<!-- Mirrored from research.dwi.ufl.edu/projects/fanDTasia/help.php?id=5 by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Jan 2024 18:59:25 GMT -->
+</html>

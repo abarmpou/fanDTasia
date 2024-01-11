@@ -1,0 +1,24 @@
+<html>
+<!-- Mirrored from research.dwi.ufl.edu/projects/fanDTasia/help.php?id=4 by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Jan 2024 18:59:28 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><title>fanDTasia help / tutorial- Diffusion Weighted MRI Processing Tool</title></head><body bgcolor="#dddddd"><table width="100%" bgcolor="#000000"><tr><td valign="top" bgcolor="#FFFFFF"><table><tr><td valign="top"><a href="index.html"><img src="fandtasia_banner.jpg" width="300px"></a></td></tr><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#000000"><table width="100%" bgcolor="#000000"><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>Help - List of topics</b></font></td></tr></table>
+<a href="helpff5d.html?id=0">System Requirements</a><br>
+<a href="help681a.html?id=1">Input Window</a><br>
+<a href="help0b30.html?id=2">Diffusion Weighted Images</a><br>
+<a href="helpd708.html?id=3">Diffusion Tensor Estimation</a><br>
+<a href="helpdcfd.html?id=4">4th-order Diffusion Tensor Estimation</a><br>
+<a href="helpd61c.html?id=5">Supported File Formats</a><br>
+</font></td></tr></table></td><td width="100%" valign="top" bgcolor="#FFFFFF"><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="000000"><table width="100%" bgcolor="#000000"><tr><td><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>4th-order Diffusion Tensor Estimation</b></font></td></tr></table><br><br> <center><img src="dt4_tab.jpg"></center><br>
+&nbsp;&nbsp;&nbsp;<b>1.</b> The 4th-order Diffusion Tensor form can be accessed by clicking on the "DT4" tab at the top of the application window. <br><br>
+&nbsp;&nbsp;&nbsp;<b>2.</b> The main area of the window shows a part of a slice from a computed 4th-order Diffusion Tensor image.<br><br>
+&nbsp;&nbsp;&nbsp;<b>3.</b> The image can be zoomed in/out by moving the slider on the bottom left.<br><br>
+&nbsp;&nbsp;&nbsp;<b>4.</b> You can page through the slices of a Diffusion-Weighted MR volume by moving the slider on the top left.<br><br>
+&nbsp;&nbsp;&nbsp;<b>5.</b> A field of 4th-order Diffusion Tensors can be estimated from the opened Diffusion-Weighted MR dataset by clicking on the "Estimate Tensors" button (using an implementation of the method presented in Barmpoutis et al. ISBI 2010). The progress of the estimation is shown on the bottom. At the end, the average processing time is reported on the bottom.<br><br>
+&nbsp;&nbsp;&nbsp;<b>6.</b> The S0 can be simultaneously estimated along with the 15 unknown 4th-order tensor coefficients. This option can also be turned off, and use an acquired S0 image instead.<br><br>
+&nbsp;&nbsp;&nbsp;<b>7.</b> Various scalar fields can be computed from the estimated 4th-order Diffusion Tensor field: Mean Diffusivity, Generalized Anisotropy, etc. Use the drop box to select one of these options.<br><br>
+&nbsp;&nbsp;&nbsp;<b>8.</b> The underlying distinct fiber orientations can be estimated from the estimated 4th-order tensors by finding the maxima of the corresponding displacement probability. The width and length of the vectors can be adjusted by moving the corresponding sliders appropriately.<br><br>
+&nbsp;&nbsp;&nbsp;<b>Saved data:</b> The saved data are in the <a href="helpd61c.html?id=5">fanDTasia FDT format</a> and can be visualized using the following Matlab command: A=openFDT('filename');plotTensors(A([1:15],:,:,slice),0.9,[81 1 0]); (the <a href="http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid%3A89529" target="_blank">fanDTasia Matlab toolbox</a> is required).<br><br>
+</font></td></tr></table><center><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Developed by <a href="http://www.cise.ufl.edu/~abarmpou">Angelos Barmpoutis</a>, Ph.D. - CVGMI lab - Computer and Information and Engineering Department - University of Florida [Version 0.01.090125 Beta]</font></center>
+      </body>
+<!-- Mirrored from research.dwi.ufl.edu/projects/fanDTasia/help.php?id=4 by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 11 Jan 2024 18:59:29 GMT -->
+</html>

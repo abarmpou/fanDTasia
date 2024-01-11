@@ -1,0 +1,512 @@
+
+	<html>
+	<head>
+	<TITLE>Tutorial on Diffusion Tensor MRI using Matlab</TITLE>
+	<script language="javascript" type="text/javascript">
+	
+	function displayRow(captionRow){
+	var row = document.getElementById(captionRow);
+	if (row.style.display == '') row.style.display = 'none';
+	else row.style.display = '';
+	return true;
+	}
+	function hideAllRows()
+	{
+	   var row = document.getElementById("step1b");
+	   row.style.display = 'none';
+	   row = document.getElementById("step1c");
+	   row.style.display = 'none';
+	   row = document.getElementById("step1d");
+	   row.style.display = 'none';
+	   row = document.getElementById("step1e");
+	   row.style.display = 'none';
+	   row = document.getElementById("step2");
+	   row.style.display = 'none';
+	   row = document.getElementById("step2a");
+	   row.style.display = 'none';
+	   row = document.getElementById("step3");
+	   row.style.display = 'none';
+	   row = document.getElementById("step4");
+	   row.style.display = 'none';
+	   row = document.getElementById("step4a");
+	   row.style.display = 'none';
+	   row = document.getElementById("step5");
+	   row.style.display = 'none';
+	   row = document.getElementById("step5a");
+	   row.style.display = 'none';
+	   row = document.getElementById("step6");
+	   row.style.display = 'none';
+	
+	}
+	
+	function updateMatlab() {
+	var cmd="";
+	if(document.getElementById("switchBox1").checked == true){cmd=cmd+"S=openFDT('fandtasia_demo.fdt');<br>params=[...copy here the contents of fandtasia_demo.txt...];<br>GradientOrientations=params(:,[1:3]);<br>b_value=params(:,4);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox2").checked == true){cmd=cmd+"imagesc(S(:,:,1,2));<br>colormap([[0:0.01:1]' [0:0.01:1]' [0:0.01:1]']);<br>colorbar('vert');".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox3").checked == true){cmd=cmd+"g=GradientOrientations([2:47],:);<br>plot3([g(:,1);-g(:,1)],[g(:,2);-g(:,2)],[g(:,3);-g(:,3)],'o');<br>axis equal;".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox4").checked == true){cmd=cmd+"S=...open the DW images using the appropriate format decoder...;<br>GradientOrientations=[...copy here the gradient orientations...];<br>b_value=[...copy here the list of b-values...];".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox5").checked == true){cmd=cmd+"UnitVectors;<br>GradientOrientations=[1 0 0;g([1:21],:)];<br>b_value=[10;ones(21,1)*1500];".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox6").checked == true){cmd=cmd+"UnitVectors;<br>GradientOrientations=[1 0 0;g([1:81],:)];<br>b_value=[10;ones(81,1)*1500];".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox7").checked == true){cmd=cmd+"UnitVectors;<br>GradientOrientations=[1 0 0;g([1:321],:)];<br>b_value=[10;ones(321,1)*1500];".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox8").checked == true){cmd=cmd+"fiber_orientation1=[cos(20*pi/180) sin(20*pi/180) 0];<br>fiber_orientation2=[cos(100*pi/180) sin(100*pi/180) 0];<br>S=ones(1,1,1,size(GradientOrientations,1));<br>for i=2:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(1,1,1,i)=S(1,1,1,1)*(SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox9").checked == true){cmd=cmd+"S=ones(32,32,1,size(GradientOrientations,1));<br>for i=2:size(GradientOrientations,1)<br>for x=1:32<br>&nbsp;&nbsp;&nbsp;for y=1:32<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f1_flag=0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f2_flag=0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if x*x+y*y&gt;16*16 & x*x+y*y&lt;32*32<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v=[y/x -1 0];v=v/sqrt(v*v');<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=v;f1_flag=1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if x&lt;y+10 & x&gt;y-10<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation2=[sqrt(2)/2 sqrt(2)/2 0];f2_flag=1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if f1_flag==0 & f2_flag==1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=fiber_orientation2;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elseif f1_flag==1 & f2_flag==0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation2=fiber_orientation1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elseif f1_flag==0 & f2_flag==0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=[0 0 1];fiber_orientation2=[0 0 1];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S(x,y,1,i)=S(x,y,1,1)*(SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>&nbsp;&nbsp;&nbsp;end<br>end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox10").checked == true){cmd=cmd+"G=constructMatrixOfMonomials(GradientOrientations, 2);<br>C=constructSetOf81Polynomials(2)';<br>P=G*C;P=[-diag(b_value)*P ones(size(GradientOrientations,1),1)];<br>DTI=zeros(3,3,size(S,1),size(S,2));S0=zeros(size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T = C * x([1:81]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j)=T;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTI(:,:,i,j)=[T(6) T(5)/2 T(4)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(5)/2 T(3) T(2)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(4)/2 T(2)/2 T(1)];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S0(i,j)=exp(x(82));<br>&nbsp;&nbsp;&nbsp;end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox11").checked == true){cmd=cmd+"S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, 2);<br>C=constructSetOf81Polynomials(2)';<br>P=G*C;P=-diag(b_value)*P;<br>DTI=zeros(3,3,size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)/S0(i,j,1)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T = C * x;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j)=T;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTI(:,:,i,j)=[T(6) T(5)/2 T(4)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(5)/2 T(3) T(2)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(4)/2 T(2)/2 T(1)];<br>&nbsp;&nbsp;&nbsp;end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox12").checked == true){cmd=cmd+"i=10;j=20;<br>mean_diffusivity=trace(DTI(:,:,i,j))/3;".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox13").checked == true){cmd=cmd+"i=10;j=20;<br>[eigenvectors,l]=eig(DTI(:,:,i,j));".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox14").checked == true){cmd=cmd+"m=(l(1,1)+l(2,2)+l(3,3))/3;<br>FA=sqrt(3/2)*sqrt((l(1,1)-m)^2+(l(2,2)-m)^2+(l(3,3)-m)^2)/sqrt(l(1,1)^2+l(2,2)^2+l(3,3)^2);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox15").checked == true){cmd=cmd+"plotDTI(DTI,0.002);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox16").checked == true){cmd=cmd+"ROIx=[10:28];<br>ROIy=[14:30];<br>plotDTI(DTI(:,:,ROIx,ROIy),0.002);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox17").checked == true){cmd=cmd+"order=4;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>P=G*C;P=[-diag(b_value)*P ones(size(GradientOrientations,1),1)];<br>S0=zeros(size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j) = C * x([1:321]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S0(i,j)=exp(x(322));<br>&nbsp;&nbsp;&nbsp;end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox18").checked == true){cmd=cmd+"order=4;<br>S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>P=G*C;P=-diag(b_value)*P;<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)/S0(i,j,1)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j) = C * x;<br>&nbsp;&nbsp;&nbsp;end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox19").checked == true){cmd=cmd+"printTensor(UniqueTensorCoefficients(:,1,1),order);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox20").checked == true){cmd=cmd+"t=UniqueTensorCoefficients(:,1,1);<br>mean_diffusivity=(t(1)+t(5)+t(15)+(t(3)+t(10)+t(12))/3)/5;".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox21").checked == true){cmd=cmd+"var=GeneralizedVariance(UniqueTensorCoefficients(:,1,1));<br>GA=1-1/(1+(250*var)^(1+1/(1+5000*var)));".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox22").checked == true){cmd=cmd+"order=4;<br>S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=squeeze(S(i,j,1,:)/S0(i,j,1));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorODF(:,i,j) = C * x;<br>&nbsp;&nbsp;&nbsp;end<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox23").checked == true){cmd=cmd+"tensor=[0.00033117; -0.00000545; 0.00159264; 0.00000564; 0.00093217; -0.00001132; 0.00026464; 0.00004150; 0.00114423; 0.00143355; 0.00003415; 0.00273919; 0.00000615; -0.00059943; 0.00077108];".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox24").checked == true){cmd=cmd+"order=4;<br>UnitVectors;GradientOrientations=g([1:21],:);<br>bvalue=1500;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>x=lsqnonneg(P, exp(-bvalue*G*tensor));<br>TensorODF = C * x;".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox25").checked == true){cmd=cmd+"printTensor(TensorODF(:,1,1),order);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox26").checked == true){cmd=cmd+"[orientations,l]=eig_dt4(TensorODF(:,1,1));".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox27").checked == true){cmd=cmd+"b_value=1500;<br>S0=1;<br>GradientOrientations=[0.1639 0.5115 0.8435; 0.1176 -0.5388 0.8342; 0.5554 0.8278 -0.0797; -0.4804 0.8719 0.0948; 0.9251 -0.0442 0.3772; 0.7512 -0.0273 -0.6596; 0.1655 -0.0161 0.9861; 0.6129 -0.3427 0.7120; 0.6401 0.2747 0.7175; -0.3724 -0.3007 0.8780; -0.3451 0.3167 0.8835; 0.4228 0.7872 0.4489; 0.0441 0.9990 0.0089; -0.1860 0.8131 0.5515; 0.8702 0.4606 0.1748; -0.7239 0.5285 0.4434; -0.2574 -0.8032 0.5372; 0.3515 -0.8292 0.4346; -0.7680 -0.4705 0.4346; 0.8261 -0.5384 0.1660; 0.9852 -0.0420 -0.1660];<br>fiber_orientation1=[cos(20*pi/180) sin(20*pi/180) 0];<br>fiber_orientation2=[cos(100*pi/180) sin(100*pi/180) 0];<br>S=zeros(size(GradientOrientations,1),1);<br>for i=1:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(i)=S0* (SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox28").checked == true){cmd=cmd+"sigma=0.01;<br>for i=1:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(i)=sqrt((S(i)+sigma*randn(1))^2+(sigma*randn(1))^2);<br>end".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox29").checked == true){cmd=cmd+"order=4;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>x=lsqnonneg(P, S/S0);<br>TensorODF = C * x;".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}if(document.getElementById("switchBox30").checked == true){cmd=cmd+"[v,l]=eig_dt4(TensorODF);<br>d1=acos(v(1,:)*[cos(100*pi/180);sin(100*pi/180);0])*180/pi;<br>d1=min(abs(d1),abs(180-d1));<br>d2=acos(v(2,:)*[cos(20*pi/180);sin(20*pi/180);0])*180/pi;<br>d2=min(abs(d2),abs(180-d2));<br>error1=(d1+d2)/2;<br>d1=acos(v(2,:)*[cos(100*pi/180);sin(100*pi/180);0])*180/pi;<br>d1=min(abs(d1),abs(180-d1));<br>d2=acos(v(1,:)*[cos(20*pi/180);sin(20*pi/180);0])*180/pi;<br>d2=min(abs(d2),abs(180-d2));<br>error2=(d1+d2)/2;<br>fiber_reconstruction_error_degrees=min(error1,error2);".replace(/<br>/g,"\n").replace(/&nbsp;/g," ").replace(/&gt;/g,">").replace(/&lt;/g,"<")+"\n";}parent.document.getElementById("commands").value=cmd;
+	} 
+	function clearMatlab() {
+	document.getElementById("switchBox1").checked = false; document.getElementById("switchBox2").checked = false; document.getElementById("switchBox3").checked = false; document.getElementById("switchBox4").checked = false; document.getElementById("switchBox5").checked = false; document.getElementById("switchBox6").checked = false; document.getElementById("switchBox7").checked = false; document.getElementById("switchBox8").checked = false; document.getElementById("switchBox9").checked = false; document.getElementById("switchBox10").checked = false; document.getElementById("switchBox11").checked = false; document.getElementById("switchBox12").checked = false; document.getElementById("switchBox13").checked = false; document.getElementById("switchBox14").checked = false; document.getElementById("switchBox15").checked = false; document.getElementById("switchBox16").checked = false; document.getElementById("switchBox17").checked = false; document.getElementById("switchBox18").checked = false; document.getElementById("switchBox19").checked = false; document.getElementById("switchBox20").checked = false; document.getElementById("switchBox21").checked = false; document.getElementById("switchBox22").checked = false; document.getElementById("switchBox23").checked = false; document.getElementById("switchBox24").checked = false; document.getElementById("switchBox25").checked = false; document.getElementById("switchBox26").checked = false; document.getElementById("switchBox27").checked = false; document.getElementById("switchBox28").checked = false; document.getElementById("switchBox29").checked = false; document.getElementById("switchBox30").checked = false; parent.document.getElementById("commands").value="";
+	}
+	</script>
+	</head>
+	
+	<body onload="hideAllRows();" bgcolor="#DDDDDD">
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">[Citation] A.Barmpoutis, "Tutorial on Diffusion Tensor MRI using Matlab", Electronic Edition, University of Florida, 2010</font><br>
+	<table><tr><td valign="top">
+	<table><tr><td><img src="tutorial.jpg" width="100px"></td><td>
+	<font size=5 face="Verdana, Arial, Helvetica, sans-serif">Tutorial on Diffusion Tensor MRI using Matlab</font><br><br>
+	<font size=3 face="Verdana, Arial, Helvetica, sans-serif">by Angelos Barmpoutis, Ph.D.</font><br><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">Copyright &copy; 2010</font>
+	</td></tr></table>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">The following subjects are covered in this tutorial: Generation of Synthetic Diffusion-Weighted MRI datasets, Diffusion Tensor (DTI) Estimation from DW-MRI, Visualize DTI as a field of ellipsoids, Higher-order Diffusion Tensor Estimation from DW-MRI, Compute Tensor Orientation Distribution Functions (Tensor ODF), Compute Fiber Orientations. The latest version of <a href="http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid%3A89529" target="_blank">fanDTasia free Matlab library for DW-MRI analysis</a> is required. 
+	<br>If you are not a Matlab user you can still read this tutorial and use the <a href="index.html" target="_blank">Java implementation of fanDTasia toolbox</a> instead. </font><br><br>
+	
+	
+	
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1');"><b><font color="#000000">Section 1: Diffusion-Weighted MRI datasets in MATLAB</font></b></a></td></tr>
+	<tr id="step1"><td>
+	<br><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	Before we start running any Diffusion Tensor experiment in Matlab, we first need 
+	to open a Diffusion-Weighted MRI (DW-MRI) dataset using the appropriate Matlab command or script. 
+	The DW-MRI datasets can be found in various different formats, depending on the brand of the MRI scanner that was used for data acquisition (e.g. Bruker, GE, Siemens, etc).
+	In most data formats, the DW-MRI dataset is given in (at least) two separate files, one describing the acquisition parameters (such as the orientations of magnetic gradients, 
+	the diffusion weighting b-value, etc.) and one containing the acquired images in a binary format.<br><br>
+	
+	In this tutorial, in order to avoid any format-specific limitation, we will directly define a DW-MRI dataset in terms of Matlab variables as follows:<br>
+	&nbsp;&nbsp;1) <font size=2 face="Courier New, Courier">GradientOrientations</font> is a matrix of size <font size=2 face="Courier New, Courier">Nx3</font>, which contains the
+	list of the diffusion sensitizing magnetic gradient orientations.<br>
+	&nbsp;&nbsp;2) <font size=2 face="Courier New, Courier">b_value</font> is a vector of size <font size=2 face="Courier New, Courier">Nx1</font>, which contains the corresponding 
+	list of diffusion weighting b-values.<br>
+	&nbsp;&nbsp;3) <font size=2 face="Courier New, Courier">S</font> is a matrix of size <font size=2 face="Courier New, Courier">sizeX x sizeY x num_of_slices x N</font>, 
+	which contains the acquired DW-MR signal responses,<br>
+	where <font size=2 face="Courier New, Courier">N</font> is the number of acquired volumes (which is usually equal to the number of magnetic gradients), 
+	<font size=2 face="Courier New, Courier">num_of_slices</font> is the number of 2D slices in each acquired volume, and each 2D slice is of size <font size=2 face="Courier New, Courier">sizeX x sizeY</font>.<br><br>
+	 
+	In the next sections we will see how to load <font size=2 face="Courier New, Courier">GradientOrientations</font>, <font size=2 face="Courier New, Courier">b_value</font>, and <font size=2 face="Courier New, Courier">S</font>
+	by opening a real DW-MRI dataset or by generating synthetic DW-MR images using simulation of the DW-MR signal attenuation.
+	 
+	</font><br><br>
+	
+		<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1a');"><b><font color="#000000">1.1 Open a real DW-MRI dataset in MATLAB</font></b></a></td></tr>
+		<tr id="step1a"><td width="30px"></td><td>
+	
+	<br><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	In our experiments we will use the demo DW-MRI dataset of a rat optic chiasm (Reference), which is available to download from <a href="index.html" target="_blank">here</a>. 
+	This dataset is in the simple and generic fanDTasia format (.FDT). More details on the specifications of this file format can be found <a href="helpd61c.html" target="_blank">here</a>.<br><br>
+	
+	After downloading this demo dataset, we can open it in Matlab using the following commands (note that the <a href="http://www.mathworks.com/matlabcentral/fileexchange/?term=authorid%3A89529" target="_blank">fanDTasia Matlab library</a> is required).
+	
+	
+	</font><br><br>
+		<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox1" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">S=openFDT('fandtasia_demo.fdt');<br>params=[...copy here the contents of fandtasia_demo.txt...];<br>GradientOrientations=params(:,[1:3]);<br>b_value=params(:,4);</font></td></tr></table><br>
+	<table><tr><td valign="top"><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	By clicking on one of the pink check boxes that appear on the side of each Matlab script in this tutorial, you copy the corresponding commands to the 
+	Matlab script generator on the left of this window. After selecting several Matlab script fragments, you can copy the generated list of commands from the 
+	left window and paste them directly to your Matlab command prompt or save them as a Matlab script file (.m).<br><br>
+	
+	You can check the size of the dataset by using the <font size=2 face="Courier New, Courier">size(S)</font> command. 
+	This particular demo dataset contains 47 acquired volumes, each volume has only 1 slice of size 32x32.<br><br>
+	A DW-MRI slice can be viewed by using the following Matlab script. This script visualizes the 1st slice of the 2nd volume in our dataset (i.e. <font size=2 face="Courier New, Courier">S(:,:,1,2)</font>), 
+	and the result is shown in the image on the right.
+	
+	</font></td><td><img src="plotDWMRI.jpg"></td></tr></table><br>
+		   <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox2" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">imagesc(S(:,:,1,2));<br>colormap([[0:0.01:1]' [0:0.01:1]' [0:0.01:1]']);<br>colorbar('vert');</font></td></tr></table><br>
+	<table><tr><td valign="top"><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	So far we have learnt how to visualize the image part of the DW-MRI dataset. What about the acquisition parameters of the dataset?<br><br>
+	
+	We can observe the set of magnetic gradient orientations by plotting them as points on the unit sphere. For example, the figure on the right shows the diffusion sensitizing
+	 magnetic gradient orientations that were used in the the acquisition process. You can see how well the set of points is distributed on the unit sphere.
+	Note that in order to achieve a better visualization we plot both antipodal points for each gradient orientation.<br><br>
+	
+	This plot appears in Matlab in 3D, so you can rotate it appropriately in order to achieve a better viewing angle. 
+	Such a plot is useful in DW-MRI processing in order to make sure that the acquisition protocol that you have followed samples uniformly the space of orientations, 
+	otherwise your results may be biased towards a specific orientation.<br><br>
+	
+	The set of Matlab commands that plot the magnetic gradient orientations is the following:
+	
+	</font></td><td><img src="plotGradients.jpg"></td></tr></table><br>
+		   <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox3" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">g=GradientOrientations([2:47],:);<br>plot3([g(:,1);-g(:,1)],[g(:,2);-g(:,2)],[g(:,3);-g(:,3)],'o');<br>axis equal;</font></td></tr></table><br>
+			<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1b');"><font color="#000000">Open other DW-MRI formats in MATLAB</font></a></td></tr>
+			<tr id="step1b"><td width="30px"></td><td>
+	<br><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	As it was mentioned earlier, in this tutorial we will not restrict our discussion to any specific file format. Depending on the format of your data, you can use the appropriate 
+	file handler/decoder in order to load your dataset in Matlab. Your script will probably look like the following generic Matlab pseudocode that you can use as a guideline.  
+	</font><br><br>
+			<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox4" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">S=...open the DW images using the appropriate format decoder...;<br>GradientOrientations=[...copy here the gradient orientations...];<br>b_value=[...copy here the list of b-values...];</font></td></tr></table><br>
+				  </td></tr>
+			   </table>
+		</td></tr>
+		   <tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1c');"><b><font color="#000000">1.2 Generate a synthetic DW-MRI dataset in MATLAB</font></b></a></td></tr>
+		<tr id="step1c"><td width="30px"></td><td>
+	<br><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	When you need to perform a quantitative comparison and validation of a DW-MRI processing technique, it is better to apply your method to a synthetic DW-MRI dataset rather than a real one.
+	The reason is that in a synthetic DW-MRI dataset you know exactly the underlying axonal fiber geometries (since you have synthesized the dataset), and therefore you can easily
+	compare your results with the ground truth. In this section we will see how to generate a realistic synthetic DW-MRI dataset using Matlab.<br><br>
+	
+	First of all, like in the real data case, we need to specify our acquisition parameters (at least the b-values and the set of magnetic sensitizing gradient orientations). 
+	The following script creates a set of 22 b-values and orientations, the first one corresponds to a low diffusion weighting (i.e. S0) and the rest of 21 have the same 
+	b-value=1500s/mm2. The 21 orientations were computed by tessellating the icosahedron on the unit hemi-sphere.
+	
+	</font><br><br>
+		   <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox5" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">UnitVectors;<br>GradientOrientations=[1 0 0;g([1:21],:)];<br>b_value=[10;ones(21,1)*1500];</font></td></tr></table><br>
+			<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1d');"><font color="#000000">Examples of higher angular resolusions 81/321</font></a></td></tr>
+			<tr id="step1d"><td width="30px"></td><td>
+				  <br><font size=2 face="Verdana, Arial, Helvetica, sans-serif">Larger sets of gradient orientations can be constructed by altering slightly the previous Matlab script as it is shown below. These two modified scripts
+			produce sets of 81 and 321 vectors respectively, by tessellating the icosahedron on the unit hemi-sphere.</font>
+	<br><br>
+			<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox6" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">UnitVectors;<br>GradientOrientations=[1 0 0;g([1:81],:)];<br>b_value=[10;ones(81,1)*1500];</font></td></tr></table><br>
+			<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox7" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">UnitVectors;<br>GradientOrientations=[1 0 0;g([1:321],:)];<br>b_value=[10;ones(321,1)*1500];</font></td></tr></table><br>
+				  <font size=2 face="Verdana, Arial, Helvetica, sans-serif">Important note: You cannot obtain vector sets of 
+				  arbitrary size using this code. The way it is written works only for 6, 21, 81 and 321 gradient orientations.</font>
+				  </td></tr>
+			   </table><br>
+		   <font size=2 face="Verdana, Arial, Helvetica, sans-serif">Having specified the acquisition parameters, we can now simulate the Diffusion-Weighted MR signal response that corresponds to certain underlying fiber geometry. 
+	For instance, we can simulate the DW-MR signal response from a single axonal fiber, or from a more complex fiber structure such as a fiber crossing.</font>
+	<table><tr><td>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">Let's begin with a simple example that generates a DW-MRI dataset of 1 voxel only, which voxel corresponds to a 2-fiber crossing. Therefore, we need first to define the 
+	orientations of these two fibers. In our experiment we will define these orientations in the X-Y plane at 20 and 100 degrees respectively as it is shown in the 
+	illustration on the right. You can easily see that in this configuration the two fibers form an angle of 80 degrees between them. Then, we need to simulate the DW-MR signal 
+	response for each gradient orientation in our protocol as follows:</font>
+	</td><td><img src="crossingvox.jpg"></td></tr></table>
+	<br>
+		<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox8" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">fiber_orientation1=[cos(20*pi/180) sin(20*pi/180) 0];<br>fiber_orientation2=[cos(100*pi/180) sin(100*pi/180) 0];<br>S=ones(1,1,1,size(GradientOrientations,1));<br>for i=2:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(1,1,1,i)=S(1,1,1,1)*(SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>end</font></td></tr></table><br>
+	<table><tr><td>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">Note that in the "for" loop we skipped the first gradient orientation because it corresponds to the S0 image (without diffusion weighting). The S0 value is stored in S(1,1,1,1)
+	and should be defined just before entering into the "for" loop. In the above script S0, was defined to be equal to 1.<br><br> 
+	</font>
+	</td><td><img src="appletsimul.jpg"></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">So far we have synthesized a DW-MRI dataset of 1-voxel only. In the next section we will see how to generate a whole DW-MRI field by extending the above simulation process.</font>
+	<br><br>
+			   <table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step1e');"><font color="#000000">How to generate a synthetic DW-MRI field</font></a></td></tr>
+			<tr id="step1e"><td width="30px"></td><td><br>
+	<table><tr><td><font size=2 face="Verdana, Arial, Helvetica, sans-serif">When you design a field of axonal fiber tracts you actually define the underlying fiber orientations at each voxel of the field.
+	Depending on your design, there may be some voxels with 1 distinct fiber orientation, others with 2 or 3 distinct fiber orientations etc. The goal is to 
+	create a field with a variety of fiber structures such as crossing and splaying fibers in order to test multi-fiber reconstruction methods or tractographic techniques.<br><br>
+	The figure on the right depicts a simple example of 2 fiber bundles crossing each other at the center of the field. Notice that one of the fiber bundles is curved so that the 
+	crossing corresponds to various intersection angles between the fibers at each voxel. The plot shown in this figure was created using the 
+	<a href="index.html" target="_blank">fanDTasia Java applet</a>.<br><br>
+	The following Matlab script creates a 2D field of size 32x32. There are 2 "for" loops running for all x,y locations in the field. The first "if" statement corresponds to the
+	curved fiber bundle, and the second "if" statement corresponds to the straight diagonal fiber bundle. 
+	</font>
+	</td><td><img src="SimulateDWMRI.jpg"></td></tr></table>
+			<br>
+			<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox9" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">S=ones(32,32,1,size(GradientOrientations,1));<br>for i=2:size(GradientOrientations,1)<br>for x=1:32<br>&nbsp;&nbsp;&nbsp;for y=1:32<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f1_flag=0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f2_flag=0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if x*x+y*y&gt;16*16 & x*x+y*y&lt;32*32<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v=[y/x -1 0];v=v/sqrt(v*v');<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=v;f1_flag=1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if x&lt;y+10 & x&gt;y-10<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation2=[sqrt(2)/2 sqrt(2)/2 0];f2_flag=1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if f1_flag==0 & f2_flag==1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=fiber_orientation2;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elseif f1_flag==1 & f2_flag==0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation2=fiber_orientation1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elseif f1_flag==0 & f2_flag==0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fiber_orientation1=[0 0 1];fiber_orientation2=[0 0 1];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S(x,y,1,i)=S(x,y,1,1)*(SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>&nbsp;&nbsp;&nbsp;end<br>end<br>end</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The above script can be easily extended to generate a 3D DW-MRI field by adding one more "for" loop. Finally, you can add as many fiber bundles to your dataset as you prefer by
+	adding "if" statements similarly to those in the previous Matlab script.
+	<br><br>
+	</font>
+				  </td></tr>
+			   </table>
+		</td></tr>
+		   </table>
+	</td></tr></table>
+	
+	
+	
+	
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step2');"><b><font color="#000000">Section 2: Estimation of Diffusion Tensors using MATLAB</font></b></a></td></tr>
+	<tr id="step2"><td><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	After having opened a Diffusion-Weighted MRI (DW-MRI) dataset in Matlab, we can estimate a field of Diffusion Tensors, known as Diffusion Tensor Image (DTI). 
+	A Diffusion Tensor is a 3x3 symmetric positive-definite matrix which can be estimated at each voxel of the DW-MR dataset by using the acquired DW-MR signal responses.
+	There are several ways we can proceed. The simplest way is to estimate the Diffusion Tensor coefficients by solving a linear system. However it is known that this approach
+	may produce negative-valued diffusivities, which is unnatural and may lead to inaccurate fiber orientation estimations. <br><br>
+	
+	All the above problems can be avoided if we convert the problem into a linear system with non-negative constraints. This algorithm guarantees that the estimated tensors
+	are positive-definite or at least semi-definite and it is very fast due to the linearity of the problem. For more technical details the reader is referred to the article
+	in which this method was first presented (<a href="https://dx.doi.org/10.1109/ISBI.2010.5490256" target="_blank">International Symposium on Biomedical Imaging, 2010</a>).<br><br>
+	
+	An implementation of this algorithm is given by the following Matlab script. This script estimates a field of Diffusion Tensors "<font size=2 face="Courier New, Courier">DTI</font>" 
+	and the zero-gradient image "<font size=2 face="Courier New, Courier">S0</font>", given a dataset of DW-MRI signal responses "<font size=2 face="Courier New, Courier">S</font>",
+	 the corresponding list of diffusion sensitizing 
+	magnetic gradient orientations "<font size=2 face="Courier New, Courier">GradientOrientations</font>", and the list of diffusion weighting b "<font size=2 face="Courier New, Courier">b_value</font>".
+	
+	<br><br></font>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox10" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">G=constructMatrixOfMonomials(GradientOrientations, 2);<br>C=constructSetOf81Polynomials(2)';<br>P=G*C;P=[-diag(b_value)*P ones(size(GradientOrientations,1),1)];<br>DTI=zeros(3,3,size(S,1),size(S,2));S0=zeros(size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T = C * x([1:81]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j)=T;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTI(:,:,i,j)=[T(6) T(5)/2 T(4)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(5)/2 T(3) T(2)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(4)/2 T(2)/2 T(1)];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S0(i,j)=exp(x(82));<br>&nbsp;&nbsp;&nbsp;end<br>end</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The above script produces a 2D field of Diffusion Tensors which corresponds to the first slice in the acquired DW-MRI volume. 
+	You can easily extend this script in order to cover the full 3D volume, by adding one more "for" loop to the two existing "for" loops.<br><br>
+	The estimated Diffusion Tensors are stored in the matrix "<font size=2 face="Courier New, Courier">DTI</font>" of size 
+	<font size=2 face="Courier New, Courier">3x3xSizeXxSizeY</font>, where SizeX and SizeY are the dimensions of each slice in the DW-MRI dataset.
+	Furthermore, the estimated zero-gradient image "<font size=2 face="Courier New, Courier">S0</font>" can be viewed as a regular DW-MRI image using Matlab, as we have seen in Section 1.
+	<br><br>
+	</font>
+			<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step2a');"><font color="#000000">Estimate Diffusion Tensors using a given S0 image</font></a></td></tr>
+			<tr id="step2a"><td width="30px"></td><td><br>
+			<font size=2 face="Verdana, Arial, Helvetica, sans-serif">It is quite common to include in your data scanning protocol, the acquisition of an S0 image.
+	Usually, this image is very clean (with high signal to noise ratio) due to the averaging of several acquisitions in the protocol and therefore there is no need to re-estimate S0 
+	during the DTI estimation process. <br><br>
+	The following Matlab script is a simple modification of the previous DTI estimation script and does not estimate S0. Instead, the acquired S0 image is employed by the algorithm.
+	<br><br>
+	Without loss of generality we assume that the S0 image is stored in the first volume of the DW-MRI dataset, i.e. <font size=2 face="Courier New, Courier">S(:,:,:,1)</font>. 
+	Therefore, the first gradient orientation as well as the first b-value are excluded from the calculations.
+			</font><br><br>
+				  <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox11" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, 2);<br>C=constructSetOf81Polynomials(2)';<br>P=G*C;P=-diag(b_value)*P;<br>DTI=zeros(3,3,size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)/S0(i,j,1)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T = C * x;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j)=T;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DTI(:,:,i,j)=[T(6) T(5)/2 T(4)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(5)/2 T(3) T(2)/2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T(4)/2 T(2)/2 T(1)];<br>&nbsp;&nbsp;&nbsp;end<br>end</font></td></tr></table><br>
+			<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+			An interesting question that may arise is the following: What if I have an acquired S0 image and I use the algorithm that re-estimates S0 along with the tensors?
+	What is the difference between the estimated and the acquired S0? In practice there is no visual difference. The only reason for re-estimating S0 is the absence of 
+	a reliable S0 image from the original DW-MRI dataset. That means that either we have S0 but it is very noisy, or we do not have S0 image at all and instead of acquiring S0 we have collected a dataset with a low b-value (say 100s/mm2).
+			</font>
+				  </td></tr>
+			   </table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">Having estimated the DTI field from the given DW-MRI dataset, we can now easily compute several quantities from the Diffusion Tensors.
+	The mean diffusivity, the eigen values, and the fractional anisotropy are some of the quantities that can be computed from the tensors and have been widely used in tensor field processing algorithms.
+	<br><br>
+	
+	The mean diffusivity is a scalar and corresponds to the trace of the Diffusion Tensor divided by 3. The following Matlab script shows how to compute the mean diffusivity at voxel (10,20).
+	You can repeat this process in order to compute the mean diffusivity at each voxel of the DTI field.
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox12" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">i=10;j=20;<br>mean_diffusivity=trace(DTI(:,:,i,j))/3;</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The following Matlab script shows how to compute the eigenvectors and eigenvalues from the diffusion tensor at voxel (10,20). The eigenvalues are stored in the variable "<font size=2 face="Courier New, Courier">l</font>".
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox13" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">i=10;j=20;<br>[eigenvectors,l]=eig(DTI(:,:,i,j));</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	For instance the second eigenvector is stored in <font size=2 face="Courier New, Courier">eigenvectors(:,2)</font> and the second eigenvalue is stored in <font size=2 face="Courier New, Courier">l(2,2)</font>.
+	<br><br>
+	The fractional anisotropy can be computed as a function of the eigenvalues. The fractional anisotropy is a real number between 0 and 1 and takes the value 0 if the tensor corresponds 
+	to an isotropic tensor, and it takes higher values for anisotropic cases. The following Matlab script shows how to compute the fractional anisotropy from the given eigenvalues.
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox14" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">m=(l(1,1)+l(2,2)+l(3,3))/3;<br>FA=sqrt(3/2)*sqrt((l(1,1)-m)^2+(l(2,2)-m)^2+(l(3,3)-m)^2)/sqrt(l(1,1)^2+l(2,2)^2+l(3,3)^2);</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	You can easily add "for" loops to the above script in order to repeat the eigenvalue decomposition and the fractional anisotropy calculation step for every voxel in the DTI field. 
+	In the next section we will see how to produce nice plots of diffusion tensor fields using Matlab.
+	</font><br><br>
+	</td></tr></table>
+	
+	
+	
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step3');"><b><font color="#000000">Section 3: Ellipsoidal Visualization of Diffusion Tensors in MATLAB</font></b></a></td></tr>
+	<tr id="step3"><td><br>
+	<table><tr><td valign="top">
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	In the previous sections we learnt how to open a Diffusion-Weighted MRI dataset in Matlab and how to estimate a Diffusion Tensor field from it.<br><br>
+	The estimated diffusion tensor field is a matrix-valued image (i.e. there is a matrix at each pixel/voxel of the image) and therefore it is not straight forward how to 
+	assess visually the estimated tensor field. One way to visualize the tensor field is to compute a scalar value from each tensor (such as the mean diffusivity or the 
+	fractional anisotropy) and display it as a regular grey-scale image, as we saw in Section 1.<br><br>
+	Another more descriptive way of visualizing a tensor field is to plot the Gaussian ellipsoids or the corresponding primary eigenvectors. Each tensor corresponds to the 
+	covariance matrix of a Gaussian, which have an ellipsoidal contour. The orientation of the ellipsoid is controlled by the eigenvectors of the tensor, and its size is proportional 
+	to the eigenvalues of the tensor. In this visualization, the isotropic tensors appear as spheres and the anisotropic tensors appear as sharp ellipsoids oriented parallel to 
+	the primary eigenvector (see the figure on the right).<br><br>
+	
+	An ellipsoidal visualization can be easily created by Matlab using the following command. The DTI field should be stored in a matrix of size <font size=2 face="Courier New, Courier">3 x 3 x ...</font> 
+	similarly to the tensor fields computed by the scripts in Section 2. The second argument of plotDTI defines the spacing between the tensors, and it can be also thought as 
+	inversely proportional to the scale of the ellipsoids. A very large number will make the ellipsoids look tiny, a very small number will make the ellipsoids so large so 
+	they will overlap each other. You can adjust this scaling factor according to your aesthetics.
+	
+	</font></td><td>
+	<img src="plotTensors.jpg"></td></tr></table><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox15" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">plotDTI(DTI,0.002);</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	Sometimes it is preferred to plot the tensor field in a Region of Interest (ROI) only. A rectangular ROI can be defined as it shown in the following Matlab script. 
+	The ROI in this particular example corresponds to the rectangle of size <font size=2 face="Courier New, Courier">19 x 17</font> formed between the pixel locations (x,y)=(10,14) and (28,30).
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox16" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">ROIx=[10:28];<br>ROIy=[14:30];<br>plotDTI(DTI(:,:,ROIx,ROIy),0.002);</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	You can add more features to the plotDTI and plotTensors functions according to your needs (such as choose a different color) by editing appropriately the plotDTI.m or plotTensors.m files. 
+	</font><br><br>
+	</td></tr></table>
+	
+	
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step4');"><b><font color="#000000">Section 4: Estimation of High-Order Diffusion Tensors using MATLAB</font></b></a></td></tr>
+	<tr id="step4"><td><br>
+	<table><tr><td>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	
+	The discussion in the previous sections was mainly focused on how to use the Diffusion Tensor model for processing Diffusion-Weighted MR images. The Diffusion Tensor model can be seen as a 
+	quadratic polynomial since it corresponds to a 2nd-order tensor. It is known that low order polynomials, although are robust due to the small number of unknown parameters,
+	are not "flexible" enough and therefore they cannot approximate more complex functions. In DW-MRI datasets it is quite common to find complex underlying fiber structures such 
+	as fiber crossings, which cannot be modeled by 2nd order DTI. Hence, one has to employ higher order approximations (an example of a 4th-order tensor is shown in the figure on the right).<br><br>
+	
+	In this section we will see how to estimate higher-order tensors using Matlab. The higher-order tensor estimation algorithm extends the DTI estimation method (see Section 2) and guarantees that the estimated higher-order tensors
+	are positive-definite or at least semi-definite and it is very fast due to the linearity of the problem. For more technical details the reader is referred to the article
+	in which this method was first presented (<a href="https://dx.doi.org/10.1109/ISBI.2010.5490256" target="_blank">International Symposium on Biomedical Imaging, 2010</a>).<br><br>
+	
+	An implementation of this algorithm is given by the following Matlab script. This script estimates a field of 4th-order Diffusion Tensors coefficients "<font size=2 face="Courier New, Courier">UniqueTensorCoefficients</font>" 
+	and the zero-gradient image "<font size=2 face="Courier New, Courier">S0</font>", given a dataset of DW-MRI signal responses "<font size=2 face="Courier New, Courier">S</font>",
+	 the corresponding list of diffusion sensitizing 
+	magnetic gradient orientations "<font size=2 face="Courier New, Courier">GradientOrientations</font>", and the list of diffusion weighting b "<font size=2 face="Courier New, Courier">b_value</font>".
+	</font></td><td><img src="dt4.jpg"></td></tr></table>
+	<br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox17" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">order=4;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>P=G*C;P=[-diag(b_value)*P ones(size(GradientOrientations,1),1)];<br>S0=zeros(size(S,1),size(S,2));<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j) = C * x([1:321]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S0(i,j)=exp(x(322));<br>&nbsp;&nbsp;&nbsp;end<br>end</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The above script produces a field of 4th-order Diffusion Tensors, which corresponds to the first slice in the acquired DW-MRI volume. 
+	The estimated higher-order Diffusion Tensors are stored in the matrix "<font size=2 face="Courier New, Courier">UniqueTensorCoefficients</font>" of size 
+	<font size=2 face="Courier New, Courier">NxSizeXxSizeY</font>, where N is the number of unique tensor coefficients in the tensor, and SizeX and SizeY are the dimensions of each slice in the DW-MRI dataset.
+	For example, in the 4th-order tensor case the number of unique coefficients is N=15, while in the 2nd-order tensor case we have N=6. The estimated zero-gradient image "<font size=2 face="Courier New, Courier">S0</font>" can be viewed as a regular DW-MRI image using Matlab, as we have seen in Section 1.
+	<br><br>
+	</font>
+			<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step4a');"><font color="#000000">Estimate High-Order Diffusion Tensors using a given S0 image</font></a></td></tr>
+			<tr id="step4a"><td width="30px"></td><td><br>
+				  <font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	Similarly to the DTI estimation case, it is quite common to acquire an S0 image along with the Diffusion-Weighted images in a DW-MRI dataset.
+	In this case there is no need to re-estimate S0  during the higher-order DTI estimation process (see discussion on this topic in Section 2). <br><br>
+	The following Matlab script is a simple modification of the previous higher-order Diffusion Tensor estimation script and does not estimate S0. Instead, the acquired S0 image is employed by the algorithm.
+	<br><br>
+	Without loss of generality we assume that the S0 image is stored in the first volume of the DW-MRI dataset, i.e. <font size=2 face="Courier New, Courier">S(:,:,:,1)</font>. 
+	Therefore, the first gradient orientation as well as the first b-value are excluded from the calculations.
+			</font><br><br>
+				  <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox18" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">order=4;<br>S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>P=G*C;P=-diag(b_value)*P;<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=log(squeeze(S(i,j,1,:)/S0(i,j,1)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UniqueTensorCoefficients(:,i,j) = C * x;<br>&nbsp;&nbsp;&nbsp;end<br>end</font></td></tr></table>              </td></tr>
+			   </table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	After having estimated the coefficients of the Higher-Order Diffusion Tensors, we can compute several quantities from them such as the Mean Diffusivity, or the Generalized Anisotropy.
+	But first let's understand a little bit more the meaning of the higher-order tensor coefficients.<br><br>
+	There are various ways of denoting the coefficients of a 4th-order tensor in 3 dimensions. The standard Einstein's notation and has the form T(i,j,k,l) where
+	the indices i,j,k,l take values from 1 to 3. Therefore there are 3 power 4 = 81 tensor coefficients. For instance if we assume that x,y,z dimensions correspond to the indexing 1,2,3 
+	then T(1,1,1,1) is the tensor coefficient that corresponds to the basis x*x*x*x, T(1,2,1,2) corresponds to the basis x*y*x*y and T(1,1,2,2) corresponds to the basis x*x*y*y.
+	If the tensor has full symmetry, then certain coefficients are equal to each other. For example T(1,2,1,2)=T(1,1,2,2)=T(2,1,2,1)=T(2,2,1,1)=T(1,2,2,1)=T(2,1,1,2). 
+	Hence, one has to use external mechanisms to impose these equality constraints.<br><br>
+	
+	This problem can be avoided if we use a different notation that comes from the 
+	standard notation of forms. In this notation the 4th-order tensor coefficients have the form D(p,q,r), where the p,q,r indices correspond to the power of x,y,z in the basis respectively.
+	In this notation we have p+q+r=4. For instance D(4,0,0) corresponds to the basis x*x*x*x, and D(2,2,0) corresponds to the basis x*x*y*y. It can be easily seen that there is no ambiguity regarding the symmetry
+	in this notation. The number of coefficients in this case is only 15 compared to the 81 coefficients in the standard Einstein's notation.
+	<br><br>
+	A simple question that one may ask is how to convert the coefficients from one form to the other? The answer is easy. 
+	You have to equate the coefficients of the equivalent monomials. For example  T(1,1,1,1) and D(4,0,0) both correspond to the monomial x*x*x*x, therefore are equal to each other.
+	The coefficients  T(1,2,1,2), T(1,1,2,2), T(2,1,2,1), T(2,2,1,1), T(1,2,2,1), T(2,1,1,2) on the one hand, and the D(2,2,0) on the other, correspond to the monomial x*x*y*y, therefore
+	we can establish the relationship D(2,2,0)=6*T(1,2,1,2)=6*T(1,1,2,2)=... etc. The multiplication factor can be easily computed in matlab by using the function 
+	<font size=2 face="Courier New, Courier">population(p,q,r,order)</font>.
+	For instance, in the previous examples, the function <font size=2 face="Courier New, Courier">population(2,2,0,4)</font> produces the result 6, 
+	while the function <font size=2 face="Courier New, Courier">population(4,0,0,4)</font> produces the result 1.<br><br>
+	The higher-order Diffusion Tensor coefficients produced by the previous Matlab scripts are in the symmetric form. 
+	Therefore, in the 4th-order case there are 15 unique tensor coefficients. You can print the tensor coefficients of the voxel (1,1) in the Matlab prompt screen by using the following command.<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox19" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">printTensor(UniqueTensorCoefficients(:,1,1),order);</font></td></tr></table><br>
+	This command will print out the 4th-order tensor coefficients like that:<br>
+	<font size=2 face="Courier New, Courier">
+	D004 = 0.00033632<br>
+	D013 = -0.00000000<br>
+	D022 = 0.00159814<br>
+	D031 = 0.00000000<br>
+	D040 = 0.00094328<br>
+	D103 = -0.00000000<br>
+	D112 = 0.00026979<br>
+	D121 = 0.00000000<br>
+	D130 = 0.00115455<br>
+	D202 = 0.00144424<br>
+	D211 = -0.00000000<br>
+	D220 = 0.00271575<br>
+	D301 = 0.00000000<br>
+	D310 = -0.00062100<br>
+	D400 = 0.00078041<br></font><br>
+	Similarly to the 2nd-order DTI, the mean diffusivity can by computed from the higher-order tensor coefficients. The following Matlab script shows how to compute the mean diffusivity at voxel (1,1).
+	You can repeat this process in order to compute the mean diffusivity at each voxel of the high-order Diffusion Tensor field.<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox20" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">t=UniqueTensorCoefficients(:,1,1);<br>mean_diffusivity=(t(1)+t(5)+t(15)+(t(3)+t(10)+t(12))/3)/5;</font></td></tr></table><br>
+	The generalized anisotropy can be also computed from the higher-order tensor coefficients. The fractional anisotropy is a real number that becomes 0 if the higher-order tensor corresponds 
+	to an isotropic tensor, and it takes higher values for anisotropic cases. The following Matlab script shows how to compute the generalized anisotropy that corresponds to the pixel (1,1).<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox21" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">var=GeneralizedVariance(UniqueTensorCoefficients(:,1,1));<br>GA=1-1/(1+(250*var)^(1+1/(1+5000*var)));</font></td></tr></table><br>
+	You can easily add "for" loops to the above script in order to repeat the generalized anisotropy calculation step for every voxel in the higher-order diffusion tensor field.
+	</font><br><br>
+	</td></tr></table>
+	
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step5');"><b><font color="#000000">Section 5: Estimation of Cartesian Tensor Orientation Distribution Functions (CT-ODF) in MATLAB</font></b></a></td></tr>
+	<tr id="step5"><td><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	In section 2, we saw how to compute the primary eigenvector of a 2nd order Diffusion Tensor, which vector corresponds to the primary orientation of diffusion.
+	However, the primary eigenvector is reliable only in the case of simple fiber structures and fails in the presence of fiber crossings. Higher-order Diffusion Tensors
+	are able to approximate well both simple and complex fiber structures as we saw in Section 4. The question that one may ask is how can we compute the fiber orientations from a 
+	4th-order tensor?<br><br>
+	
+	<table><tr><td><font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	It is known that the peaks of the higher-order Diffusion Tensors do not correspond to the underlying distinct fiber orientations. 
+	Instead, one should find the maxima of the corresponding water molecule displacement probability or the maxima of the Orientation Distribution Function (ODF). In this section
+	we will compute the ODF expressed in a tensor form (Cartesian Tensor ODF) using Matlab given a Diffusion-Weighted MRI (DW-MRI) dataset.</font></td><td>
+	<img src="tensorODF.jpg"></td></tr></table>
+	<br><br>
+	
+	The following Matlab script computes a field of CT-ODFs "<font size=2 face="Courier New, Courier">TensorODF</font>" 
+	from a given dataset of DW-MRI signal responses "<font size=2 face="Courier New, Courier">S</font>",
+	the corresponding list of diffusion sensitizing 
+	magnetic gradient orientations "<font size=2 face="Courier New, Courier">GradientOrientations</font>", and the list of diffusion weighting b "<font size=2 face="Courier New, Courier">b_value</font>".
+	The CT-ODF order here was chosen to be 4. You can see that the script looks very similar to 
+	the one that computes high-order Diffusion Tensors in Section 4. For more technical information, the reader is referred to the corresponding article on CT-ODFs that can be found 
+	here: (<a href="https://doi.org/10.1007/978-3-642-15705-9_71" target="_blank">International Conference on Medical Image Computing and Computer Assisted Intervention - 2010</a>).
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox22" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">order=4;<br>S0=S(:,:,:,1); S=S(:,:,:,[2:length(b_value)]);<br>GradientOrientations=GradientOrientations([2:length(b_value)],:);<br>b_value=b_value([2:length(b_value)]);<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>for i=1:size(S,1)<br>&nbsp;&nbsp;&nbsp;for j=1:size(S,2)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y=squeeze(S(i,j,1,:)/S0(i,j,1));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x=lsqnonneg(P, y);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorODF(:,i,j) = C * x;<br>&nbsp;&nbsp;&nbsp;end<br>end</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The above script computes a 2D field of 4th-order CT-ODFs, which corresponds to the first slice in the acquired DW-MRI volume. 
+	The estimated ODF coefficients are stored in the matrix "<font size=2 face="Courier New, Courier">TensorODF</font>" of size 
+	<font size=2 face="Courier New, Courier">NxSizeXxSizeY</font>, where N is the number of unique tensor coefficients in the tensor ODF, and SizeX and SizeY are the dimensions of each slice in the DW-MRI dataset.
+	For example, in the 4th-order tensor ODF case the number of unique coefficients is N=15, while in the 2nd-order tensor ODF case we have N=6.
+	<br><br>
+	</font>
+			<table><tr><td width="30px"></td><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step5a');"><font color="#000000">Estimate Cartesian Tensor ODFs from High-Order Diffusion Tensors</font></a></td></tr>
+			<tr id="step5a"><td width="30px"></td><td><br>
+				  <font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+			By using the previous Matlab script we can compute CT-ODFs directly from the given DW-MRI datasets. However it is possible to compute CT-ODFs from the 
+				  higher-order Diffusion Tensors as well. Below we will convert a given 4th-order Diffusion Tensor to a 4th-order Tensor ODF. Assume that the coefficients of a 
+				  4th-order Diffusion Tensor are given in the following vector form. The ordering of the tensor coefficients is the same as the one produced by the higher-order 
+				  Diffusion Tensor estimation algorithm in Section 4. 
+			</font><br><br>
+				  <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox23" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">tensor=[0.00033117; -0.00000545; 0.00159264; 0.00000564; 0.00093217; -0.00001132; 0.00026464; 0.00004150; 0.00114423; 0.00143355; 0.00003415; 0.00273919; 0.00000615; -0.00059943; 0.00077108];</font></td></tr></table><br>
+			<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+			The following Matlab script computes the coefficients of the CT-ODF that corresponds to the given higher-order Diffusion Tensor. The computed CT-ODF coefficients
+			are stored in the vector "<font size=2 face="Courier New, Courier">TensorODF</font>".
+			</font><br><br>
+				  <table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox24" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">order=4;<br>UnitVectors;GradientOrientations=g([1:21],:);<br>bvalue=1500;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>x=lsqnonneg(P, exp(-bvalue*G*tensor));<br>TensorODF = C * x;</font></td></tr></table><br>
+			<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+			The above Matlab script can be repeated using appropriate "for" loops in order to convert a whole field of higher-order Diffusion Tensors into a field of higher-order Tensor ODFs. 
+				  Keep in mind that the maxima of the computed Tensor ODFs correspond to the fiber orientations, while the maxima of the higher-order Diffusion Tensors do not. 
+				  Therefore, the above conversion of DTs to CT-ODFs may be quite useful during data processing.<br>
+			</font>
+				  </td></tr>
+			   </table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	After having estimated the CT-ODFs, we can print the tensor ODF coefficients of the voxel (1,1) in the Matlab prompt screen by using the following command. 
+	The output will be displayed in the same form as the Diffusion Tensor coefficients in Section 4. 
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox25" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">printTensor(TensorODF(:,1,1),order);</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The critical orientations (i.e. maxima, minima, etc.) of a 4th-order tensor can be computed by the following function, which generalizes the eigenvector computation in higher-order cases.
+	</font><br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox26" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">[orientations,l]=eig_dt4(TensorODF(:,1,1));</font></td></tr></table><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The values in "<font size=2 face="Courier New, Courier">l</font>" correspond to the values obtained by evaluating the CT-ODF along the computed orientations. In the next section we will setup a 
+	full multi-fiber reconstruction experiment and we will employ 4th-order tensor ODFs in order to compute the underlying fiber orientations. 
+	</font><br><br>
+	</td></tr></table>
+	<table><tr><td><img src="expand.jpg" title="Click on title to expand"><a href="tutorial.html" onclick="return !displayRow('step6');"><b><font color="#000000">Example: A Multi-Fiber Reconstruction Experiment in MATLAB</font></b></a></td></tr>
+	<tr id="step6"><td><br>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	<table><tr><td>
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	In this section we will design the full pipeline of a synthetic DW-MRI quantitative experiment in Matlab. In this experiment we will simulate the 
+	DW-MRI signal of a fiber crossing and then we will add various levels of noise to the dataset in order to test how accurate are the fiber orientations estimated 
+	by performing multi-fiber reconstruction using higher-order tensor ODFs.<br><br>   
+	The first step in our experiment is to generate the synthetic DW-MRI dataset. The following Matlab script simulates the DW-MRI signal that corresponds to a 2-fiber crossing 
+	(the fiber orientations are illustrated in the figure on the right) using a list of 21 Gradient Orientations that we have also defined. More details on how to generate synthetic 
+	DW-MRI datasets can be found in Section 1.
+	</font>
+	</td><td><img src="crossingvox.jpg"></td></tr></table><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox27" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">b_value=1500;<br>S0=1;<br>GradientOrientations=[0.1639 0.5115 0.8435; 0.1176 -0.5388 0.8342; 0.5554 0.8278 -0.0797; -0.4804 0.8719 0.0948; 0.9251 -0.0442 0.3772; 0.7512 -0.0273 -0.6596; 0.1655 -0.0161 0.9861; 0.6129 -0.3427 0.7120; 0.6401 0.2747 0.7175; -0.3724 -0.3007 0.8780; -0.3451 0.3167 0.8835; 0.4228 0.7872 0.4489; 0.0441 0.9990 0.0089; -0.1860 0.8131 0.5515; 0.8702 0.4606 0.1748; -0.7239 0.5285 0.4434; -0.2574 -0.8032 0.5372; 0.3515 -0.8292 0.4346; -0.7680 -0.4705 0.4346; 0.8261 -0.5384 0.1660; 0.9852 -0.0420 -0.1660];<br>fiber_orientation1=[cos(20*pi/180) sin(20*pi/180) 0];<br>fiber_orientation2=[cos(100*pi/180) sin(100*pi/180) 0];<br>S=zeros(size(GradientOrientations,1),1);<br>for i=1:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(i)=S0* (SimulateDWMRI(fiber_orientation1,GradientOrientations(i,:))+ SimulateDWMRI(fiber_orientation2,GradientOrientations(i,:)))/2;<br>end</font></td></tr></table><br>
+	Note that the previous script generates a dataset of 1 voxel only and 21 gradient directions. After having simulated the DW-MRI signal of the fiber crossing we can add 
+	various levels of noise to it. The following script simulates a Riccian type noise model of a typical standard deviation level of 0.01 denoted by "sigma".<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox28" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">sigma=0.01;<br>for i=1:size(GradientOrientations,1)<br>&nbsp;&nbsp;&nbsp;S(i)=sqrt((S(i)+sigma*randn(1))^2+(sigma*randn(1))^2);<br>end</font></td></tr></table><br>
+	After that, the noisy DW-MRI signal is given to the multi-fiber reconstruction algorithm that computes higher-order Cartesian Tensor-ODFs as we have seen in Section 5. 
+	In our case we use order-4 and the computed 15 tensor ODF coefficients are stored in the vector "<font size=2 face="Courier New, Courier">TensorODF</font>".<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox29" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">order=4;<br>G=constructMatrixOfMonomials(GradientOrientations, order);<br>C=constructSetOf321Polynomials(order)';<br>BG=constructMatrixOfIntegrals(GradientOrientations, order, 100);<br>P=BG*C;<br>x=lsqnonneg(P, S/S0);<br>TensorODF = C * x;</font></td></tr></table><br>
+	From the estimated tensor ODF coefficients we can compute the underlying distinct fiber orientations and compare them with the ground truth fiber orientations that we
+	had defined when we generated the synthetic DW-MRI dataset.  The following Matlab script computes the fiber orientation error angle in degrees.<br><br>
+	<table bgcolor="#000000"><tr><td bgcolor="#FFAAAA"><center><INPUT TYPE="checkbox" ID="switchBox30" onclick="updateMatlab()"><br><font size=1 face="Verdana, Arial, Helvetica, sans-serif">Use this code</font></center></td><td bgcolor="#FFFFFF" width="600px"><font size=2 face="Courier New, Courier">[v,l]=eig_dt4(TensorODF);<br>d1=acos(v(1,:)*[cos(100*pi/180);sin(100*pi/180);0])*180/pi;<br>d1=min(abs(d1),abs(180-d1));<br>d2=acos(v(2,:)*[cos(20*pi/180);sin(20*pi/180);0])*180/pi;<br>d2=min(abs(d2),abs(180-d2));<br>error1=(d1+d2)/2;<br>d1=acos(v(2,:)*[cos(100*pi/180);sin(100*pi/180);0])*180/pi;<br>d1=min(abs(d1),abs(180-d1));<br>d2=acos(v(1,:)*[cos(20*pi/180);sin(20*pi/180);0])*180/pi;<br>d2=min(abs(d2),abs(180-d2));<br>error2=(d1+d2)/2;<br>fiber_reconstruction_error_degrees=min(error1,error2);</font></td></tr></table><br>
+	<table><tr><td valign="top">
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif">
+	The above experiment can be repeated for several noise samples and several noise levels by easily adding "for" loops to the appropriate scripts.
+	If you consider noise levels in the range 0.02-0.12 and repeat the experiment for 100 times per noise level, you will be able to display the obtained results using an errorbar 
+	as shown in the figure on the right.<br><br>
+	This plot was created using the Matlab function <font size=2 face="Courier New, Courier">errorbar</font>. The vertical lines depict the standard deviation of the observed 
+	fiber orientation angle error. The line that connects the vertical bars shows the mean fiber orientation error for each noise level. As expected, the fiber reconstruction error
+	increases with the standard deviation of the noise in the dataset.
+	</font>
+	</td><td>
+	<img src="plotErrors.jpg"></td></tr></table>
+	<br>
+	</font>
+	</td></tr></table>
+	</td></tr></table>
+	
+	<font size=2 face="Verdana, Arial, Helvetica, sans-serif"><br><br>
+	This tutorial is considered copyrighted intellectual property and should not be copied, re-published or re-posted on a server without the prior written permission from the author. All rights reserved. Angelos Barmpoutis &copy; 2010.<br><br>  
+	[Citation] A.Barmpoutis, "Tutorial on Diffusion Tensor MRI using Matlab", Electronic Edition, University of Florida, 2010</font>
+	</body>
+	</html>
+	
